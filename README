@@ -1,0 +1,28 @@
+Name: Advika Deodhar
+Lab Section: 6-9pm
+Notes: The code to test processMsgFromServer() is commented out and included in server.c starting on line 82
+_______________________________________________________________________________________________________________
+My notes while coding: 
+
+so basically in this lab, all we are doing is solving the problem that when sending and recieving, 
+the messages don't have a defined boundary, 
+so we are writing wrapper functions around the send() and the recv() call 
+to make sure that our data is sent and read in chunks that we know the separations of
+
+sendPDU psuedocode and plan:  
+- takes in the socket we are using, the data buffer that is holding the data to send, and how long the data is
+- need to make a buffer to construct the application PDU 
+- make the buffer long enough to hold the length of the PDU and then the actual data length (data length + 2 bytes)
+- memcpy the data from the data buffer to the new buffer
+- take the length of the data and add 2 to it, put it in network order for the PDU
+(keep a version of it in host order for when you actually call send)
+- the length field of the built PDU includes the data length and the 2 bytes to hold the length
+- make sure to error check the send call since it is a syscall and need to check if < 0. 
+- return how many bytes you have written? (length of PDU)
+- for send, use send(int socket_num, char* data, int data_len, int flags) and make the flags 0.
+- for recieve, use recv(int socket_num, char* data, int data_len, MSG_WAITALL) and make the flags 0.
+
+recv plan:
+- just call recv twice
+- first time receive the header then receive the actual data
+- where do we put the data? 
